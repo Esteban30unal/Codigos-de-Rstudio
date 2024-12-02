@@ -1,6 +1,6 @@
 ---
-title: "Explicación análisi diferencial"
-author: 'Maria Jose Aldana Grillo '
+title: "Explicación análisis diferencial"
+author: 'Julian Esteban Gutierrez Ariza '
 date: "2024-09-12"
 output:
   pdf_document: default

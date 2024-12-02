@@ -1,0 +1,112 @@
+---
+title: "Mi primer Dashboard "
+author: "Yotas"
+date: "16/10/2024"    
+output: 
+  flexdashboard::flex_dashboard:
+    social: menu
+    source_code: embed
+runtime: shiny 
+---
+
+# Ingresos y Años de Escolaridad 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+library(readxl)
+library(tidyverse)
+library(DT)
+library(shiny)
+
+```
+
+
+```{r}
+
+setwd("C:/Users/USUARIO/Desktop/Análisis estadstico/Curso R/Rstudio/Archivos/16.- RMarkdown")
+
+enoe <- read_xlsx("mu_enoe.xlsx")
+
+```
+
+## Columna 1 
+
+```{r}
+
+selectInput("Estado", label = "Selecciona el estado:",
+choices = unique(enoe$estado), selected = "Jalisco")
+
+```
+
+
+```{r}
+
+enoe2<-reactive(filter(enoe, estado==input$Estado))
+
+```
+
+### ingresos vs Años de Escolaridad 
+
+```{r}
+
+renderPlot({
+ggplot(enoe2()) +
+geom_point(mapping = aes(x =anios_esc, y =ingreso_mensual, colour = sex ))
+})
+
+```
+
+### DIferencias en el salarios promedios 
+
+```{r}
+
+renderPlot({
+ggplot(enoe2())+
+geom_bar(mapping = aes(x=sex, fill=sex))
+})
+
+```
+
+
+
+# Nivel educativo
+
+## Columna 1
+
+### Información por sexo
+
+```{r}
+
+ggplot(data=enoe)+
+geom_bar(mapping = aes(x=sex, fill=niv_edu))
+
+```
+
+
+### Ubicación
+
+```{r}
+library(leaflet)
+leaflet() %>%
+setView(-103.38742861607173, 20.67460296566588, zoom = 16) %>%
+addTiles() %>%
+addMarkers(-103.38742861607173, 20.67460296566588, popup = "Minerva")
+```
+
+## Columna 2
+
+### Observaciones
+
+```{r}
+ggplot(data=enoe, mapping = aes(x=sex, fill=niv_edu))+
+geom_bar( position = "dodge")+
+labs(title="Observaciones por sexo y nivel educativo", x="Sexo", y="Observaciones")
+```
+
+### Diagrama caja
+
+```{r}
+ggplot(data=enoe, mapping = aes(x=niv_edu, y=ingreso_mensual))+
+geom_boxplot()+
+coord_flip()
+```
